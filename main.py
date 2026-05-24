@@ -61,8 +61,8 @@ def main():
         sys.exit(1)
 
     try:
-        api = PiShockSerialAPI()
         players = build_players(cfg)
+        api = PiShockSerialAPI(players)
         source = DolphinSource(
             dolphin_path=cfg.dolphin_path,
             iso_path=cfg.iso_path,

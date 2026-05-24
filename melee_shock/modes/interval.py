@@ -23,7 +23,7 @@ class IntervalMode(BaseMode):
 
         self._last_shock_frame = None
 
-    def update(self, player_id: int, gamestate: GameState) -> ShockEvent | None:
+    def update(self, port: int, gamestate: GameState) -> ShockEvent | None:
         frame = gamestate.frame
 
         # wait `_interval_frames` frames before initial shock

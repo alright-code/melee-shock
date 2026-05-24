@@ -1,28 +1,24 @@
 import logging
 import threading
-from dataclasses import dataclass
-from enum import Enum
 import melee
+from enum import Enum
 
 from melee import GameState
-from melee_shock.modes.base import BaseMode
 from melee_shock.apis.base import BaseAPI
 from melee_shock.sources.base import BaseSource
 from melee_shock.modes.base import ShockEvent
+from melee_shock.models import OutputMode, Player
 
 logger = logging.getLogger(__name__)
 
 
-class OutputMode(Enum):
-    DISABLED = "disabled"
-    VIBRATE = "vibrate"
-    SHOCK = "shock"
+KILL_BUTTON = melee.Button.BUTTON_D_LEFT
+PING_BUTTON = melee.Button.BUTTON_D_RIGHT
 
 
-@dataclass
-class Player:
-    output_mode: OutputMode
-    mode: BaseMode | None
+class EngineMode(Enum):
+    ON = "on"
+    OFF = "off"
 
 
 class Engine:
@@ -38,6 +34,9 @@ class Engine:
 
         self._running = False
         self._thread: threading.Thread | None = None
+
+        self.prev_frame: int | None = None
+        self.mode = EngineMode.ON
 
     def start(self):
         """Start the engine in a background thread."""
@@ -79,32 +78,52 @@ class Engine:
                 logger.exception("Error during engine tick")
 
     def _tick(self, state: GameState):
-        logger.info(state.menu_state)
         if state.menu_state not in [
             melee.Menu.IN_GAME,
             melee.Menu.SUDDEN_DEATH,
-            melee.Menu.CHARACTER_SELECT,
         ]:
             return
 
-        for player_id, player in self.players.items():
-            if state.menu_state == melee.Menu.CHARACTER_SELECT:
-                player_state = state.players.get(player_id)
-                if not player_state:
+        # new game started
+        if self.prev_frame is None or state.frame < self.prev_frame:
+            self.mode = EngineMode.ON
+            logger.info("New game detected, resetting engine mode to ON")
+
+        if self.mode == EngineMode.ON:
+            kill_pressed = any(
+                (ps := state.players.get(port)) is not None
+                and player.output_mode != OutputMode.DISABLED
+                and ps.controller_state.button[KILL_BUTTON]
+                for port, player in self.players.items()
+            )
+            if kill_pressed:
+                logger.info("Kill button pressed, setting engine mode to OFF")
+                self.mode = EngineMode.OFF
+                for port, player in self.players.items():
+                    if player.output_mode != OutputMode.DISABLED:
+                        self.api.end(port)
+
+        for port, player in self.players.items():
+            player_state = state.players.get(port)
+            if player_state and player_state.controller_state.button[PING_BUTTON]:
+                logger.info(f"Ping button pressed, beeping player {port}")
+                self.api.beep(port, duration=500)
+
+            if self.mode == EngineMode.ON:
+                if player.output_mode == OutputMode.DISABLED:
                     continue
 
-            if player.output_mode == OutputMode.DISABLED:
-                continue
+                event: ShockEvent | None = player.mode.update(port, state)
 
-            event: ShockEvent | None = player.mode.update(player_id, state)
+                if event is None:
+                    continue
 
-            if event is None:
-                continue
+                try:
+                    if player.output_mode == OutputMode.VIBRATE:
+                        self.api.vibrate(port, event.intensity, event.duration)
+                    elif player.output_mode == OutputMode.SHOCK:
+                        self.api.shock(port, event.intensity, event.duration)
+                except Exception:
+                    logger.exception("Shock failed for player %d", port)
 
-            try:
-                if player.output_mode == OutputMode.VIBRATE:
-                    self.api.vibrate(player_id, event.intensity, event.duration)
-                elif player.output_mode == OutputMode.SHOCK:
-                    self.api.shock(player_id, event.intensity, event.duration)
-            except Exception:
-                logger.exception("Shock failed for player %d", player_id)
+        self.prev_frame = state.frame

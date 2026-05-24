@@ -4,6 +4,7 @@ import logging
 import serial
 import serial.tools.list_ports
 import time
+from melee_shock.engine import Player
 
 from melee_shock.apis.base import BaseAPI
 
@@ -11,7 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class PiShockSerialAPI(BaseAPI):
-    def __init__(self):
+    def __init__(self, players: dict[int, Player]):
+        super().__init__(players)
+
         self.ser = None
         for port in serial.tools.list_ports.comports():
             if port.vid == 0x1A86 and port.pid == 0x7523:
@@ -41,23 +44,27 @@ class PiShockSerialAPI(BaseAPI):
         self.shocker_ids: list[int] = [s["id"] for s in info["shockers"]]
         logger.info("Found shockers: %s", self.shocker_ids)
 
-    def _send(self, player_id: int, op: str, intensity: int | None, duration: int):
-        # TODO: map player_id to shocker_id
-        shocker_id = self.shocker_ids[0]
+        self._map_shockers()
+
+    def _send(self, port: int, op: str, intensity: int | None, duration: int):
+        shocker_id = self.shocker_map[port]
         value = {"id": shocker_id, "op": op, "duration": duration}
         if intensity is not None:
             value["intensity"] = intensity
         self.ser.write((json.dumps({"cmd": "operate", "value": value}) + "\n").encode())
 
         logger.debug(
-            f"player={player_id} op={op} intensity={intensity} duration={duration}"
+            f"player={port} shocker={shocker_id} op={op} intensity={intensity} duration={duration}"
         )
 
-    def beep(self, player_id: int, duration: int):
-        self._send(player_id, "beep", None, duration)
+    def beep(self, port: int, duration: int):
+        self._send(port, "beep", None, duration)
 
-    def vibrate(self, player_id: int, intensity: int, duration: int):
-        self._send(player_id, "vibrate", intensity, duration)
+    def vibrate(self, port: int, intensity: int, duration: int):
+        self._send(port, "vibrate", intensity, duration)
 
-    def shock(self, player_id: int, intensity: int, duration: int):
-        self._send(player_id, "shock", intensity, duration)
+    def shock(self, port: int, intensity: int, duration: int):
+        self._send(port, "shock", intensity, duration)
+
+    def end(self, port: int):
+        self._send(port, "end", None, 0)
