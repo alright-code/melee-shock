@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from melee_shock.models import Player, OutputMode
+from melee_shock.models import Player
 import logging
 
 logger = logging.getLogger(__name__)
