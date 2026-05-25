@@ -48,7 +48,8 @@ class DamageMode(BaseMode):
                 ),
             )
             duration = max(
-                int(self.cfg.min_duration * 1000), player_state.hitstun_frames_left * 1000 // 60
+                int(self.cfg.min_duration * 1000),
+                player_state.hitstun_frames_left * 1000 // 60,
             )
             self._current_percent = percent
             return ShockEvent(duration=duration, intensity=intensity)

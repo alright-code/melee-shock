@@ -36,6 +36,8 @@ class IntervalMode(BaseMode):
 
         if frame - self._last_shock_frame >= self._interval_frames:
             self._last_shock_frame = frame
-            return ShockEvent(duration=int(self.cfg.duration * 1000), intensity=self.cfg.intensity)
+            return ShockEvent(
+                duration=int(self.cfg.duration * 1000), intensity=self.cfg.intensity
+            )
 
         return None
