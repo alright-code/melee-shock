@@ -28,9 +28,8 @@ Copy `config.toml` and edit it for your setup:
 
 ```toml
 [dolphin]
-slippi_address = "127.0.0.1"
-slippi_port = 51441
 path = "path/to/Slippi"
+iso = "path/to/meleeiso"
 
 [mode]
 type = "damage"
