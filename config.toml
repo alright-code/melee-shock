@@ -4,12 +4,14 @@ global_max_intensity = 10
 debug = true
 
 [mode]
-name      = "damage"
-max_intensity = 1
+name      = "action"
+intensity = 1
+action = "SHIELD"
+do_while = false
 
 [players.1]
-output_mode = "disabled"
+output_mode = "shock"
 
 [players.2]
-output_mode = "shock"
+output_mode = "disabled"
 
