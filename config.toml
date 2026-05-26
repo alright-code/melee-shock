@@ -10,7 +10,7 @@ action = "SHIELD"
 do_while = false
 
 [players.1]
-output_mode = "shock"
+output_mode = "vibrate"
 
 [players.2]
 output_mode = "disabled"
