@@ -82,7 +82,7 @@ output_mode = "vibrate"
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `action` | str | — | Action state name (e.g. `"SHIELD"`, `"GRAB"`). Must match a [`melee.Action`](https://libmelee.readthedocs.io/en/latest/enums.html) enum value |
+| `action` | str or list[str] | — | Action state name(s) (e.g. `"SHIELD"` or `["SHIELD", "GRAB"]`). Must match [`melee.Action`](https://libmelee.readthedocs.io/en/latest/enums.html) enum values |
 | `intensity` | int | — | Fixed intensity |
 | `do_while` | bool | `false` | If `true`, shocks continuously while the action is held; if `false`, shocks once on entry |
 
