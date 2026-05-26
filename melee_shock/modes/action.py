@@ -20,14 +20,15 @@ class ActionMode(BaseMode):
     class Config(BaseModel):
         name: str = "action"
         intensity: int
-        action: str
+        action: str | list[str]
         do_while: bool = False
 
     def __init__(self, cfg: Config):
         super().__init__()
 
         self.cfg = cfg
-        self._action = melee.Action[cfg.action]
+        actions = cfg.action if isinstance(cfg.action, list) else [cfg.action]
+        self._actions = {melee.Action[a] for a in actions}
 
     def _new_game(self):
         self._current_action = None
@@ -40,7 +41,7 @@ class ActionMode(BaseMode):
 
         action = player_state.action
         if self.cfg.do_while:
-            if action == self._action:
+            if action in self._actions:
                 now = time.monotonic()
                 if (
                     self._last_shock_time is None
@@ -49,7 +50,7 @@ class ActionMode(BaseMode):
                     self._last_shock_time = now
                     return ShockEvent(duration=DURATION, intensity=self.cfg.intensity)
         else:
-            if action == self._action and self._current_action != self._action:
+            if action in self._actions and self._current_action not in self._actions:
                 self._current_action = action
                 return ShockEvent(duration=DURATION, intensity=self.cfg.intensity)
 

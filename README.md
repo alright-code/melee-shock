@@ -51,7 +51,7 @@ output_mode = "vibrate"
 
 | Parameter | Description |
 |---|---|
-| `global_max_intensity` | Hard cap on intensity sent to any output, regardless of mode settings (0–100) |
+| `global_max_intensity` | Hard cap on intensity sent to any output, regardless of mode settings (0-100) |
 
 **Output modes:**
 
