@@ -4,6 +4,13 @@ Real-time haptic feedback for Super Smash Bros. Melee. Monitors live game state 
 
 **Please read the *Online Play* section below if looking to play online.**
 
+## Safety
+
+- Always follow [PiShock's safety guidelines](https://pishock.com). Do not use around the neck, spine, or chest. Do not use with any heart conditions.
+- `melee-shock` is not responsible by any harm caused by misuse of the PiShock device 
+- Set `global_max_intensity` to a conservative value before your first session
+- The in-game kill switch (D-Pad Left) immediately stops output
+
 ## Features
 
 - **Damage mode** - triggers feedback when your character takes damage; intensity scales with damage dealt, duration matches hitstun frames
