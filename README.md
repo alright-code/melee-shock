@@ -265,7 +265,7 @@ melee_shock/
 
 ## TODO
 
-- [ ] Desktop GUI
+- [x] Desktop GUI
 - [ ] Wii console support
 - [ ] Charge meter mode
 - [ ] Better support for online opponents
