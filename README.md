@@ -103,18 +103,6 @@ Each player can override the global mode with a `[mode]` block inside their `[pl
 
 Pre-built Windows executables are available on the [Releases](../../releases) page. Download the latest zip, extract it, and run `melee-shock.exe`.
 
-## Usage
-
-```bash
-python main.py --config config.toml
-```
-
-## Building
-
-```bash
-pyinstaller --windowed --name melee-shock --icon assets/icon.ico --collect-all customtkinter --collect-all melee gui.py
-```
-
 ## Online Play
 
 **Your personal shock settings will always be [players.1] in the config.**
@@ -261,6 +249,18 @@ melee_shock/
 ├── apis/            # Shock hardware backends (PiShock serial)
 ├── modes/           # Shock trigger logic (damage, interval)
 └── sources/         # Game state providers (Dolphin)
+```
+
+## Usage
+
+```bash
+python main.py --config config.toml
+```
+
+## Building
+
+```bash
+pyinstaller --windowed --name melee-shock --icon assets/icon.ico --collect-all customtkinter --collect-all melee gui.py
 ```
 
 ## TODO
