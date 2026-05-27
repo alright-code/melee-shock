@@ -1,6 +1,8 @@
 # melee-shock
 
-Real-time haptic feedback for Super Smash Bros. Melee. Monitors live game state from Dolphin emulator and triggers physical feedback on a connected [PiShock](https://pishock.com) hub when in-game events occur. Feedback can be either vibration or electrical.
+*Hi! Is the pain of playing melee not enough for you? Do you need more motivation to play better? Have you ever wanted to feel like Ash and his greninja from the Pokemon anime? Well this is for you!*
+
+Real-time haptic feedback for Super Smash Bros. Melee. Monitors live game state from Dolphin and triggers physical feedback on a connected [PiShock](https://pishock.com) hub when in-game events occur. Feedback can be either vibration or electrical.
 
 **Please read the *Online Play* section below if looking to play online.**
 
@@ -24,11 +26,13 @@ Real-time haptic feedback for Super Smash Bros. Melee. Monitors live game state 
 
 - Python 3.11+
 - [Slippi Dolphin](https://slippi.gg/) with a Melee ISO
-- A PiShock hub connected via USB serial
+- A PiShock hub connected via USB
 
 ## Installation
 
 ```bash
+uv sync
+# or
 pip install -e .
 ```
 
@@ -95,10 +99,20 @@ output_mode = "vibrate"
 
 Each player can override the global mode with a `[mode]` block inside their `[players.N]` entry.
 
+## Download
+
+Pre-built Windows executables are available on the [Releases](../../releases) page. Download the latest zip, extract it, and run `melee-shock.exe`.
+
 ## Usage
 
 ```bash
 python main.py --config config.toml
+```
+
+## Building
+
+```bash
+pyinstaller --windowed --name melee-shock --icon assets/icon.ico --collect-all customtkinter --collect-all melee gui.py
 ```
 
 ## Online Play

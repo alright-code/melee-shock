@@ -2,3 +2,5 @@
 .ruff_cache/
 Logs/
 __pycache__/
+build/
+dist/

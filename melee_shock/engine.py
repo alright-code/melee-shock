@@ -63,6 +63,7 @@ class Engine:
         if self._thread:
             self._thread.join(timeout=2.0)
         self.source.stop()
+        self.api.close()
         logger.info("Engine stopped")
 
     def run(self):
@@ -72,6 +73,7 @@ class Engine:
             self._loop()
         finally:
             self.source.stop()
+            self.api.close()
 
     def _loop(self):
         while self._running:

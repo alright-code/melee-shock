@@ -1,11 +1,13 @@
 [project]
 name = "melee-shock"
 version = "0.1.0"
-description = "Add your description here"
+description = "PiShock support for SSBM"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "customtkinter>=5.2",
     "melee>=0.47.2",
     "pydantic>=2.13.4",
+    "pyinstaller>=6.20.0",
     "pyserial>=3.5",
 ]

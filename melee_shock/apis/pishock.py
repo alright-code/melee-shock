@@ -68,3 +68,8 @@ class PiShockSerialAPI(BaseAPI):
 
     def end(self, port: int):
         self._send(port, "end", None, 0)
+
+    def close(self) -> None:
+        super().close()
+        if self.ser and self.ser.is_open:
+            self.ser.close()

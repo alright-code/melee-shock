@@ -6,8 +6,8 @@ debug = true
 [mode]
 name      = "action"
 intensity = 1
-action = "SHIELD"
-do_while = false
+action = ["SHIELD", "GRAB"]
+do_while = true
 
 [players.1]
 output_mode = "vibrate"

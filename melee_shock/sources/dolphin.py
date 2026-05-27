@@ -49,7 +49,11 @@ class DolphinSource(BaseSource):
         return gamestate
 
     def stop(self):
-        self.console.stop()
+        try:
+            self.console.stop()
+        except OSError:
+            # Windows invalidates the pipe handle when Dolphin exits before we close it
+            pass
         if self.log:
             self.log.writelog()
             logger.info("Log file created: " + self.log.filename)

@@ -23,6 +23,13 @@ class BaseAPI(ABC):
         logger.info(f"Mapped shockers to ports: {self.shocker_map}")
         logger.info(f"Unused shockers: {self.shocker_ids[shocker_idx:]}")
 
+    def close(self) -> None:
+        for port in self.shocker_map:
+            try:
+                self.end(port)
+            except Exception:
+                pass
+
     @abstractmethod
     def beep(self, port: int, duration: int):
         pass
